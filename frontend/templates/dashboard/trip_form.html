@@ -2,31 +2,19 @@
 {% extends "dashboard/base.html" %}
 {% block title %}Add Trip{% endblock %}
 {% block content %}
-<h1>Create a New Trip</h1>
 
 {% if error %}
     <div class="error">{{ error }}</div>
 {% endif %}
+<h1>{% if is_edit %}Edit Trip{% else %}Create a New Trip{% endif %}</h1>
 
 <form method="post">
     {% csrf_token %}
-    <label>
-        Title:
-        <input type="text" name="title" required maxlength="255">
-    </label><br>
-    <label>
-        Destination:
-        <input type="text" name="destination" required maxlength="255">
-    </label><br>
-    <label>
-        Start date:
-        <input type="date" name="start_date" required>
-    </label><br>
-    <label>
-        End date:
-        <input type="date" name="end_date" required>
-    </label><br>
-    <button type="submit">Save</button>
+    <input type="text" name="title" value="{{ trip.title|default:'' }}" required>
+    <input type="text" name="destination" value="{{ trip.destination|default:'' }}" required>
+    <input type="date" name="start_date" value="{{ trip.start_date|default:'' }}" required>
+    <input type="date" name="end_date" value="{{ trip.end_date|default:'' }}" required>
+    <button type="submit">{% if is_edit %}Update{% else %}Save{% endif %}</button>
 </form>
 
 <p><a href="{% url 'trip-list' %}">Back to list</a></p>

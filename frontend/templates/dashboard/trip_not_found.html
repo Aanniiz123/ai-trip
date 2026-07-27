@@ -1,0 +1,7 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Trip Not Found{% endblock %}
+{% block content %}
+<h1>Trip Not Found</h1>
+<p>The trip you're looking for doesn't exist.</p>
+<p><a href="{% url 'trip-list' %}">Back to all trips</a></p>
+{% endblock %}

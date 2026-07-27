@@ -3,22 +3,21 @@
 {% block content %}
 <h1>Trips</h1>
 
-{% if error %}
-    <div class="error">Error loading trips: {{ error }}</div>
-{% endif %}
-
 {% if trips %}
     <ul>
-    {% for t in trips %}
+        {% for t in trips %}
         <li>
-            <strong>{{ t.title }}</strong> – {{ t.destination }}
-            ({{ t.start_date }} to {{ t.end_date }})
+            <a href="{% url 'trip-detail' t.id %}">
+                <strong>{{ t.title }}</strong>
+            </a>
+            – {{ t.destination }} ({{ t.start_date }} to {{ t.end_date }})
         </li>
     {% endfor %}
     </ul>
 {% else %}
     <p>No trips found.</p>
 {% endif %}
+
 
 <p><a href="{% url 'trip-create' %}">Add a new trip</a></p>
 {% endblock %}

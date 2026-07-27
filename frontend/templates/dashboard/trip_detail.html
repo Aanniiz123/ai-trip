@@ -1,0 +1,13 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ trip.title }}{% endblock %}
+{% block content %}
+<h1>{{ trip.title }}</h1>
+<p><strong>Destination:</strong> {{ trip.destination }}</p>
+<p><strong>Dates:</strong> {{ trip.start_date }} to {{ trip.end_date }}</p>
+<p><strong>Created:</strong> {{ trip.created_at }}</p>
+<p>
+    <a href="{% url 'trip-edit' trip.id %}">Edit</a> |
+    <a href="{% url 'trip-list' %}">Back to list</a>
+    <a href="{% url 'trip-delete' trip.id %}">Delete</a>
+</p>
+{% endblock %}
