@@ -10,3 +10,7 @@ python -m venv .venv
 
 ## to create the alembic folder
 alembic.ini
+
+
+## To migrate the table 
+alembic upgrade head

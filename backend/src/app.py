@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.routers import trips
+from src.routers import trips, auth
 
 
 
@@ -10,3 +10,4 @@ def health_check():
     return {"status": "ok"}
 
 app.include_router(trips.router)
+app.include_router(auth.router)
