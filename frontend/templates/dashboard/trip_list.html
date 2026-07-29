@@ -1,23 +1,76 @@
 {% extends "dashboard/base.html" %}
-{% block title %}Trip List{% endblock %}
+
+{% block title %}My Trips | Trip Planner{% endblock %}
+
 {% block content %}
-<h1>Trips</h1>
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="bi bi-map-fill"></i>
+            My Trips
+        </h1>
+        <p class="page-subtitle">All your planned adventures in one place</p>
+    </div>
+    <a href="{% url 'trip-create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        Plan a New Trip
+    </a>
+</div>
 
 {% if trips %}
-    <ul>
-        {% for t in trips %}
-        <li>
-            <a href="{% url 'trip-detail' t.id %}">
-                <strong>{{ t.title }}</strong>
-            </a>
-            – {{ t.destination }} ({{ t.start_date }} to {{ t.end_date }})
-        </li>
+<div class="row">
+    {% for t in trips %}
+    <div class="col-md-6 col-lg-4 mb-4">
+
+        <a href="{% url 'trip-detail' t.id %}" class="text-decoration-none text-reset">
+            <div class="card trip-card">
+                {% comment %}Cycle through cover gradients based on trip id{% endcomment %}
+                <div class="trip-card-cover {% cycle 'sunset' 'ocean' 'forest' 'sky' 'dusk' 'mono' %}">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+
+                <div class="trip-card-body">
+                    <h3 class="trip-card-title">{{ t.title }}</h3>
+                    <div class="trip-card-dest">
+                        <i class="bi bi-pin-map-fill"></i>
+                        {{ t.destination }}
+                    </div>
+                    <div class="trip-card-dates ocean">
+                        <i class="bi bi-calendar-event"></i>
+                        {{ t.start_date }} → {{ t.end_date }}
+                    </div>
+
+                    <div class="trip-card-actions">
+                        <span class="text-muted" style="font-size: 13px;">
+                            <i class="bi bi-clock-history me-1"></i>
+                            Created {{ t.created_at|slice:":10" }}
+                        </span>
+                        <span class="btn btn-primary" style="pointer-events:none;">
+                            View
+                            <i class="bi bi-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+    </div>
     {% endfor %}
-    </ul>
+</div>
+
 {% else %}
-    <p>No trips found.</p>
+
+<div class="empty-state">
+    <i class="bi bi-luggage-fill"></i>
+    <h4>No trips yet</h4>
+    <p>Your travel journal is empty. Start planning your first adventure!</p>
+    <a href="{% url 'trip-create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>
+        Create Your First Trip
+    </a>
+</div>
+
 {% endif %}
 
-
-<p><a href="{% url 'trip-create' %}">Add a new trip</a></p>
 {% endblock %}

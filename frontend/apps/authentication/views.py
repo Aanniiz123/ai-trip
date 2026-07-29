@@ -2,7 +2,9 @@
 from django.shortcuts import render, redirect                                                                       
 from django.conf import settings                                                                                    
 import requests                                                                                                     
+
 API_BASE = getattr(settings, "API_BASE_URL", "http://127.0.0.1:8000")                                               
+
 def login(request):                                                                                                 
     if request.method == "POST":                                                                                    
         email = request.POST.get("email")                                                                           
@@ -26,7 +28,7 @@ def login(request):
         return render(request, "authentication/login.html", {"error": error})                                       
     return render(request, "authentication/login.html")     
 
-                                                        
+
 def register(request):                                                                                              
     if request.method == "POST":                                                                                    
         payload = {                                                                                                 
@@ -50,7 +52,7 @@ def logout(request):
     if request.method == "POST":
         request.session.flush()  # clear the JWT from session
         return redirect("login")
-    return redirect("trip-list")  # if someone visits /logout/ via GET, send them back
+    return redirect("trip-list") # if someone visits /logout/ via GET, send them back
 def hello(request):                                                                                                 
     from django.http import HttpResponse                                                                            
     return HttpResponse("Auth page")                                                                                

@@ -1,13 +1,61 @@
 {% extends "dashboard/base.html" %}
-{% block title %}{{ trip.title }}{% endblock %}
+
+{% block title %}{{ trip.title }} | Trip Planner{% endblock %}
+
 {% block content %}
-<h1>{{ trip.title }}</h1>
-<p><strong>Destination:</strong> {{ trip.destination }}</p>
-<p><strong>Dates:</strong> {{ trip.start_date }} to {{ trip.end_date }}</p>
-<p><strong>Created:</strong> {{ trip.created_at }}</p>
-<p>
-    <a href="{% url 'trip-edit' trip.id %}">Edit</a> |
-    <a href="{% url 'trip-list' %}">Back to list</a>
-    <a href="{% url 'trip-delete' trip.id %}">Delete</a>
-</p>
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="bi bi-geo-alt-fill"></i>
+            {{ trip.title }}
+        </h1>
+        <p class="page-subtitle">Trip details and itinerary overview</p>
+    </div>
+    <a href="{% url 'trip-list' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i>
+        Back to Trips
+    </a>
+</div>
+
+<div class="card">
+    <div class="detail-cover">
+        <i class="bi bi-airplane-fill"></i>
+    </div>
+
+    <div class="card-body p-4 p-md-5">
+
+        <div class="detail-meta">
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-pin-map me-1"></i>Destination</div>
+                <div class="value">{{ trip.destination }}</div>
+            </div>
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-calendar-event me-1"></i>Start Date</div>
+                <div class="value">{{ trip.start_date }}</div>
+            </div>
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-calendar-check me-1"></i>End Date</div>
+                <div class="value">{{ trip.end_date }}</div>
+            </div>
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-clock-history me-1"></i>Created</div>
+                <div class="value">{{ trip.created_at }}</div>
+            </div>
+        </div>
+
+        <div class="detail-actions">
+            <a href="{% url 'trip-edit' trip.id %}" class="btn btn-warning">
+                <i class="bi bi-pencil-square"></i>
+                Edit Trip
+            </a>
+            <a href="{% url 'trip-delete' trip.id %}" class="btn btn-danger">
+                <i class="bi bi-trash"></i>
+                Delete Trip
+            </a>
+        </div>
+
+    </div>
+</div>
+
 {% endblock %}

@@ -1,8 +1,126 @@
-    <form method="post">                                                                                                
-       {% csrf_token %}                                                                                                  
-       <input type="text" name="username" placeholder="Username" required>                                               
-       <input type="email" name="email" placeholder="Email" required>                                                    
-       <input type="password" name="password" placeholder="Password" required>                                           
-       <button type="submit">Register</button>                                                                           
-       {% if error %}<p style="color:red">{{ error }}</p>{% endif %}                                                     
-     </form>   
+{% extends "authentication/base.html" %}
+
+{% block title %}Register | AI Trip Planner{% endblock %}
+
+{% block content %}
+<div class="auth-stage">
+    <div class="auth-wrap">
+
+        <!-- Left poster panel -->
+        <aside class="auth-poster">
+            <div class="poster-brand">
+                <i class="bi bi-airplane-engines-fill"></i>
+                <span>AI Trip Planner</span>
+            </div>
+
+            <div class="poster-content">
+                <span class="poster-tag">Start exploring</span>
+                <h1 class="poster-title">
+                    Create your<br>
+                    travel <span>passport.</span>
+                </h1>
+                <p class="poster-sub">
+                    Sign up and unlock AI-powered itineraries, smart packing lists,
+                    and personalized destination recommendations.
+                </p>
+
+                <div class="poster-stats">
+                    <div class="poster-stat">
+                        <i class="bi bi-globe-americas"></i>
+                        <div>
+                            <strong>Worldwide</strong>
+                            <span>Coverage</span>
+                        </div>
+                    </div>
+                    <div class="poster-stat">
+                        <i class="bi bi-magic"></i>
+                        <div>
+                            <strong>Smart</strong>
+                            <span>Suggestions</span>
+                        </div>
+                    </div>
+                    <div class="poster-stat">
+                        <i class="bi bi-shield-check"></i>
+                        <div>
+                            <strong>Secure</strong>
+                            <span>Account</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right register card -->
+        <div>
+            <div class="card auth-card">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="logo-circle">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+
+                    <h2 class="auth-title">Create Account</h2>
+                    <p class="auth-sub">Join thousands of happy travelers</p>
+
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" name="username" class="form-control"
+                                       placeholder="Your explorer name" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="email" class="form-control"
+                                       placeholder="you@explorer.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="password" class="form-control"
+                                       placeholder="Create a strong password" required>
+                            </div>
+                        </div>
+
+                        {% if error %}
+                        <div class="alert alert-danger mt-3 mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                        </div>
+                        {% endif %}
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-rocket-takeoff me-2"></i>
+                                Start My Journey
+                            </button>
+                        </div>
+
+                        <div class="divider">already traveling with us?</div>
+
+                        <div class="auth-footer" style="margin-top:0;">
+                            Have an account?
+                            <a href="{% url 'login' %}">Login →</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <p class="text-center text-white-50 small mt-4 mb-0" style="opacity:.7;">
+                🌍 Your next great story is one trip away.
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -127,23 +127,81 @@ def trip_edit(request, trip_id):
 
 @login_required_session
 def trip_delete(request, trip_id):
-    headers = get_auth_headers(request) 
+    """Confirm (GET) and execute (POST) deletion of a trip."""
+    headers = get_auth_headers(request)
+
     if request.method == "POST":
         try:
-            resp = requests.delete(f"{API_BASE}/trips/{trip_id}", timeout=5, headers=headers)
+            resp = requests.delete(
+                f"{API_BASE}/trips/{trip_id}", timeout=5, headers=headers
+            )
             resp.raise_for_status()
             return redirect("trip-list")
+
+        except requests.exceptions.HTTPError as e:
+            # Backend rejected the delete — show the user what happened.
+            status = e.response.status_code if e.response is not None else "?"
+            body = ""
+            try:
+                body = e.response.json().get("detail", "") if e.response is not None else ""
+            except Exception:
+                body = e.response.text if e.response is not None else ""
+            error = f"Delete failed (HTTP {status}): {body or str(e)}"
+            print(f"[trip_delete] POST failed: {error}")  # visible in runserver log
+
+            # Re-fetch the trip so the confirmation page can re-render with the real title.
+            try:
+                refetch = requests.get(
+                    f"{API_BASE}/trips/{trip_id}", timeout=5, headers=headers
+                )
+                refetch.raise_for_status()
+                trip = refetch.json()
+            except Exception:
+                trip = {"id": trip_id, "title": "Trip", "destination": "Unknown"}
+
+            return render(
+                request,
+                "dashboard/trip_confirm_delete.html",
+                {"trip": trip, "error": error},
+            )
+
         except Exception as e:
-            return render(request, "dashboard/trip_detail.html", {
-                "trip": {"id": trip_id}, "error": str(e)
-            })
-    # GET — show confirmation page
+            error = f"Unexpected error: {e}"
+            print(f"[trip_delete] POST unexpected: {error}")
+            try:
+                refetch = requests.get(
+                    f"{API_BASE}/trips/{trip_id}", timeout=5, headers=headers
+                )
+                refetch.raise_for_status()
+                trip = refetch.json()
+            except Exception:
+                trip = {"id": trip_id, "title": "Trip", "destination": "Unknown"}
+            return render(
+                request,
+                "dashboard/trip_confirm_delete.html",
+                {"trip": trip, "error": error},
+            )
+
+    # GET — show the confirmation page (use auth headers so FastAPI recognizes the user).
     try:
-        resp = requests.get(f"{API_BASE}/trips/{trip_id}", timeout=5)
+        resp = requests.get(
+            f"{API_BASE}/trips/{trip_id}", timeout=5, headers=headers
+        )
         resp.raise_for_status()
         trip = resp.json()
+    except requests.exceptions.HTTPError as e:
+        if e.response is not None and e.response.status_code == 404:
+            return render(request, "dashboard/trip_not_found.html", status=404)
+        return render(
+            request, "dashboard/trip_list.html",
+            {"trips": [], "error": f"Could not load trip: {e}"},
+        )
     except Exception as e:
-        return render(request, "dashboard/trip_list.html", {"trips": [], "error": str(e)})
+        return render(
+            request, "dashboard/trip_list.html",
+            {"trips": [], "error": str(e)},
+        )
+
     return render(request, "dashboard/trip_confirm_delete.html", {"trip": trip})
 
 

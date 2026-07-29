@@ -1,22 +1,84 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Trip Planner{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
+
 <body>
-    <nav>
-        <a href="{% url 'trip-list' %}">Trips</a>
-        <a href="{% url 'trip-create' %}">Add Trip</a>
-        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+
+<header class="top-navbar">
+    <div class="logo">
+        <i class="bi bi-airplane-engines-fill"></i>
+        <span>Trip Planner</span>
+    </div>
+
+    <div class="nav-right">
+        {% if request.session.user_email %}
+        <span class="d-none d-md-inline" style="opacity:.85; font-size: 14px;">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ request.session.user_email }}
+        </span>
+        {% endif %}
+
+        <form method="post" action="{% url 'logout' %}" class="logout-form">
             {% csrf_token %}
-            <button type="submit">Logout</button>
+            <button class="btn-logout" type="submit">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </button>
         </form>
-    </nav>
-    <main>
+    </div>
+</header>
+
+<div class="wrapper">
+
+    <aside class="sidebar">
+        <h4>Navigate</h4>
+        <hr>
+        <a href="{% url 'trip-list' %}">
+            <i class="bi bi-map"></i>
+            My Trips
+        </a>
+        <a href="{% url 'trip-create' %}">
+            <i class="bi bi-plus-circle"></i>
+            Add Trip
+        </a>
+
+        <hr>
+        <p class="text-muted">Coming Soon</p>
+        <a href="#" style="opacity:0.5; cursor:not-allowed;">
+            <i class="bi bi-stars"></i>
+            AI Itineraries
+        </a>
+        <a href="#" style="opacity:0.5; cursor:not-allowed;">
+            <i class="bi bi-currency-dollar"></i>
+            Budget Tracker
+        </a>
+        <a href="#" style="opacity:0.5; cursor:not-allowed;">
+            <i class="bi bi-camera"></i>
+            Travel Journal
+        </a>
+    </aside>
+
+    <main class="content">
         {% block content %}{% endblock %}
     </main>
+
+</div>
+
+<footer>
+    <i class="bi bi-globe-americas me-2"></i>
+    © 2026 AI Trip Planner · Crafted for travelers
+</footer>
+
 </body>
 </html>
