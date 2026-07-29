@@ -10,6 +10,10 @@
     <nav>
         <a href="{% url 'trip-list' %}">Trips</a>
         <a href="{% url 'trip-create' %}">Add Trip</a>
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
     </nav>
     <main>
         {% block content %}{% endblock %}

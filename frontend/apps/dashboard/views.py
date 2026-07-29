@@ -6,11 +6,29 @@ from django.conf import settings
 
 API_BASE = getattr(settings, "API_BASE_URL", "http://127.0.0.1:8000")
 
+def login_required_session(view_func):                                                                              
+    def wrapper(request, *args, **kwargs):                                                                          
+        if not request.session.get("access_token"):                                                                 
+            return redirect("login")                                                                                
+        return view_func(request, *args, **kwargs)                                                                  
+    return wrapper                                                                                                  
+                         
+
+
+def get_auth_headers(request):                                                                                      
+    token = request.session.get("access_token")                                                                     
+    if token:                                                                                                       
+        return {"Authorization": f"Bearer {token}"}                                                                 
+    return {}                                                                                                       
+            
+
+@login_required_session
 def trip_list(request):
     """Fetch all the trips from the FastAPI backend and render them."""
 
+    headers = get_auth_headers(request) 
     try:
-        resp = requests.get(f"{API_BASE}/trips/", timeout=5)
+        resp = requests.get(f"{API_BASE}/trips/", timeout=5, headers=headers)
         resp.raise_for_status()
         trips = resp.json()
 
@@ -23,9 +41,10 @@ def trip_list(request):
     return render(request, "dashboard/trip_list.html", {"trips": trips, "error": error})
 
 
-
+@login_required_session
 def trip_create(request):
     """Handle POST from the form to create a new trip."""
+    headers = get_auth_headers(request) 
     if request.method == "POST":
         payload = {
             "title": request.POST.get("title"),
@@ -34,7 +53,7 @@ def trip_create(request):
             "end_date": request.POST.get("end_date"),
         }
         try:
-            resp = requests.post(f"{API_BASE}/trips/", json=payload, timeout=5)
+            resp = requests.post(f"{API_BASE}/trips/", json=payload, timeout=5, headers=headers)
             resp.raise_for_status()
         except Exception as e:
             error = str(e)
@@ -48,10 +67,11 @@ def trip_create(request):
     return render(request, "dashboard/trip_form.html")
 
 
-
+@login_required_session
 def trip_detail(request, trip_id):
+    headers = get_auth_headers(request) 
     try:
-        resp = requests.get(f"{API_BASE}/trips/{trip_id}", timeout=5)
+        resp = requests.get(f"{API_BASE}/trips/{trip_id}", timeout=5, headers=headers)
         resp.raise_for_status()
         trip = resp.json()
         error = None
@@ -67,8 +87,9 @@ def trip_detail(request, trip_id):
 
 
 
-
+@login_required_session
 def trip_edit(request, trip_id):
+    headers = get_auth_headers(request) 
     if request.method == "POST":
         payload = {
             "title": request.POST.get("title"),
@@ -77,7 +98,7 @@ def trip_edit(request, trip_id):
             "end_date": request.POST.get("end_date"),
         }
         try:
-            resp = requests.put(f"{API_BASE}/trips/{trip_id}", json=payload, timeout=5)
+            resp = requests.put(f"{API_BASE}/trips/{trip_id}", json=payload, timeout=5, headers=headers)
             resp.raise_for_status()
             return redirect("trip-detail", trip_id=trip_id)
         except requests.exceptions.HTTPError as e:
@@ -104,11 +125,12 @@ def trip_edit(request, trip_id):
 
 
 
-
+@login_required_session
 def trip_delete(request, trip_id):
+    headers = get_auth_headers(request) 
     if request.method == "POST":
         try:
-            resp = requests.delete(f"{API_BASE}/trips/{trip_id}", timeout=5)
+            resp = requests.delete(f"{API_BASE}/trips/{trip_id}", timeout=5, headers=headers)
             resp.raise_for_status()
             return redirect("trip-list")
         except Exception as e:
@@ -125,12 +147,15 @@ def trip_delete(request, trip_id):
     return render(request, "dashboard/trip_confirm_delete.html", {"trip": trip})
 
 
-def parse_api_error(resp):
+def parse_api_error(resp, request):
     """Extract readable error from FastAPI response."""
     try:
         data = resp.json()
         if isinstance(data.get("detail"), list):
             return "; ".join(d["msg"] for d in data["detail"])
         return data.get("detail", resp.text)
-    except Exception:
-        return resp.text
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 401:                                       
+            request.session.flush()             
+            return redirect("login")                                            
+                                

@@ -124,9 +124,7 @@ async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(get_db),
 ) -> Token:
-    # OAuth2PasswordRequestForm always calls the field "username", but
-    # since your login schema (UserLogin) and User model use email,
-    # we treat form_data.username as the email here.
+
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(

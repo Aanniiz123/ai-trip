@@ -38,5 +38,6 @@ class TripUpdate(TripBase):
 class TripResponse(TripBase):
     id: int
     created_at: datetime
+    user_id: int
 
     model_config = {"from_attributes": True}
