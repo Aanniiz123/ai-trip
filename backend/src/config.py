@@ -6,6 +6,7 @@ class Setting(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
+    PLACE_API : str
 
     class Config:
         env_file = '.env'
