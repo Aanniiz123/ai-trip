@@ -15,8 +15,29 @@ router = APIRouter(prefix="/places", tags=["places"])
 
 
 @router.post("/search")
-async def search_place(body: CityRequest):
-    return await places_service.search_city(body.city)
+async def search_place(
+    body: CityRequest,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    result = await places_service.search_city(body.city)
+    if result.get("success"):
+        existing = db.query(Place).filter(
+            Place.user_id == current_user.id,
+            Place.name == body.city
+        ).first()
+        if not existing:
+            db.add(Place(
+                user_id=current_user.id,
+                name=body.city,
+                country=result.get("country"),
+                state=result.get("state"),
+                city=result.get("city"),
+                latitude=result.get("latitude"),
+                longitude=result.get("longitude"),
+            ))
+            db.commit()
+    return result
 
 
 @router.post("/", response_model=PlaceResponse, status_code=status.HTTP_201_CREATED)
