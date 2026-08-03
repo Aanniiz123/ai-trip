@@ -5,9 +5,10 @@ from sqlalchemy.orm import Session
 from src.config import setting
 from src.modules.hotels.models import HotelSearchHistory
 from src.modules.places.models import Place
+from src.config import setting
 
-GEOCODE_URL = "https://api.geoapify.com/v1/geocode/search"
-PLACES_URL = "https://api.geoapify.com/v2/places"
+GEOCODE_URL = setting.GEOCODE_URL
+PLACES_URL = setting.PLACES_URL
 
 
 class HotelsService:

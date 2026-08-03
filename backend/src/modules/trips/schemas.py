@@ -17,6 +17,7 @@ class TripBase(BaseModel):
     budget: Optional[Decimal] = Field(None, ge=0)
     currency: str = Field("USD", min_length=3, max_length=3)
     audience: str = Field("foreign", pattern="^(local|foreign)$")
+    is_completed: bool = False
 
     @model_validator(mode="after")
     def _check_dates(self):
@@ -42,6 +43,7 @@ class TripUpdate(BaseModel):
     budget: Optional[Decimal] = Field(None, ge=0)
     currency: Optional[str] = None
     audience: Optional[str] = None
+    is_completed: Optional[bool] = None
 
 
 class TripRead(TripBase):

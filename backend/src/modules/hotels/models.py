@@ -12,4 +12,5 @@ class HotelSearchHistory(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     place = Column(String(255), nullable=False)
+    hotel_name = Column(String(255), nullable=True) 
     searched_at = Column(DateTime(timezone=True), server_default=func.now())

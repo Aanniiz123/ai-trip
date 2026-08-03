@@ -1,8 +1,8 @@
 
 import enum
-from datetime import date, datetime
+from datetime import datetime
 from sqlalchemy import (
-    Column, Integer, String, Date, DateTime, Enum, ForeignKey, func, DECIMAL
+    Column, Integer, String, Date, DateTime, Enum, ForeignKey, func, DECIMAL, Boolean
 )
 from sqlalchemy.orm import relationship
 from src.database import Base
@@ -38,6 +38,8 @@ class Trip(Base):
         Enum("local", "foreign", name="trip_audience_enum"),
         nullable=False, default="foreign"
     )
+
+    is_completed = Column(Boolean, default=False, nullable=False)
 
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(

@@ -39,3 +39,17 @@ def delete_trip(db: Session, trip_id: int, user_id: int) -> Trip | None:
     db.delete(trip)
     db.commit()
     return trip
+
+
+def mark_trip_completed(db: Session, trip_id: int, user_id: int, is_completed: bool) -> Trip | None:
+    trip = get_trip(db, trip_id, user_id)
+    if not trip:
+        return None
+    trip.is_completed = is_completed
+    db.commit()
+    db.refresh(trip)
+    return trip
+
+
+def get_trips_by_status(db: Session, user_id: int, is_completed: bool) -> list[Trip]:
+    return db.query(Trip).filter(Trip.user_id == user_id, Trip.is_completed == is_completed).all()

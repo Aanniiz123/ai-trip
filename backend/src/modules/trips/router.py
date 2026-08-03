@@ -8,7 +8,9 @@ from src.database import get_db
 from src.modules.users.users_profile import User
 from src.modules.auth.service import get_current_active_user
 from src.modules.trips.schemas import TripCreate, TripUpdate, TripResponse
-from src.modules.trips.service import get_trips, create_trip, get_trip, update_trip, delete_trip
+from src.modules.trips.service import get_trips, create_trip, get_trip, update_trip, delete_trip, mark_trip_completed, get_trips_by_status
+from src.modules.hotels.schemas import HotelsResult
+from src.modules.hotels.service import hotels_service
 
 router = APIRouter(prefix="/trips", tags=["trips"])
 
@@ -21,6 +23,21 @@ async def list_trips(
     return get_trips(db, current_user.id)
 
 
+@router.get("/{trip_id}/hotels", response_model=List[HotelsResult])
+async def get_hotels_for_trip(
+    trip_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    trip = get_trip(db, trip_id, current_user.id)
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    return await hotels_service.search_hotels(
+        place=trip.destination,
+        user_id=current_user.id,
+        db=db
+    )
+    
 @router.post("/", response_model=TripResponse, status_code=status.HTTP_201_CREATED)
 async def create_new_trip(
     trip_data: TripCreate,
@@ -64,3 +81,43 @@ async def delete_existing_trip(
     trip = delete_trip(db, trip_id, current_user.id)
     if not trip:
         raise HTTPException(status_code=404, detail="Trip not found")
+
+
+@router.patch("/{trip_id}/complete", response_model=TripResponse)
+async def mark_trip_as_completed(
+    trip_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    trip = mark_trip_completed(db, trip_id, current_user.id, is_completed=True)
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    return trip
+
+
+@router.patch("/{trip_id}/uncomplete", response_model=TripResponse)
+async def mark_trip_as_uncompleted(
+    trip_id: int,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    trip = mark_trip_completed(db, trip_id, current_user.id, is_completed=False)
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    return trip
+
+
+@router.get("/status/completed", response_model=List[TripResponse])
+async def list_completed_trips(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    return get_trips_by_status(db, current_user.id, is_completed=True)
+
+
+@router.get("/status/uncompleted", response_model=List[TripResponse])
+async def list_uncompleted_trips(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+):
+    return get_trips_by_status(db, current_user.id, is_completed=False)
