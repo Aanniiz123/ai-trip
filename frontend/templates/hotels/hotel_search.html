@@ -1,0 +1,69 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Hotel Search | Trip Planner{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="bi bi-building-check"></i> Hotel Search
+        </h1>
+        <p class="page-subtitle">Find hotels at any destination</p>
+    </div>
+</div>
+
+<div class="card form-card mb-4">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row align-items-end">
+                <div class="col-md-9 mb-3 mb-md-0">
+                    <label class="form-label"><i class="bi bi-pin-map me-1"></i>Destination</label>
+                    <input type="text" name="place" class="form-control"
+                           placeholder="e.g. Paris, Tokyo, New York"
+                           value="{{ place|default:'' }}" required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i> Search Hotels
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error }}</div>
+{% endif %}
+
+{% if hotels %}
+<h5 class="mb-3">Hotels near <strong>{{ place }}</strong></h5>
+<div class="row">
+    {% for h in hotels %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-building me-2"></i>{{ h.name }}</h5>
+                {% if h.address %}
+                <p class="card-text text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ h.address }}</p>
+                {% endif %}
+                {% if h.phone %}
+                <p class="card-text small"><i class="bi bi-telephone me-1"></i>{{ h.phone }}</p>
+                {% endif %}
+                {% if h.website %}
+                <a href="{{ h.website }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                    <i class="bi bi-globe me-1"></i> Visit Website
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% elif place and not error %}
+<div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No hotels found near {{ place }}.</div>
+{% endif %}
+
+{% endblock %}

@@ -37,7 +37,7 @@ def register(request):
             "password": request.POST.get("password"),                                                               
         }                                                                                                           
         try:                                                                                                        
-            resp = requests.post(f"{API_BASE}/auth/register", json=payload, timeout=5)                              
+            resp = requests.post(f"{API_BASE}/v2/auth/register", json=payload, timeout=5)                              
             resp.raise_for_status()                                                                                 
             return redirect("login")  # after register, go to login                                                 
         except requests.exceptions.HTTPError as e:                                                                  
@@ -53,6 +53,8 @@ def logout(request):
         request.session.flush()  # clear the JWT from session
         return redirect("login")
     return redirect("trip-list") # if someone visits /logout/ via GET, send them back
+
+
 def hello(request):                                                                                                 
     from django.http import HttpResponse                                                                            
     return HttpResponse("Auth page")                                                                                

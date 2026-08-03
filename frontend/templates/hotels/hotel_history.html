@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Hotel History | Trip Planner{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="bi bi-clock-history"></i> Hotel Search History
+        </h1>
+        <p class="page-subtitle">Your past hotel searches</p>
+    </div>
+</div>
+
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error }}</div>
+{% endif %}
+
+{% if history %}
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th><i class="bi bi-pin-map me-1"></i>Place</th>
+                    <th><i class="bi bi-clock me-1"></i>Searched At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in history %}
+                <tr>
+                    <td>{{ h.place }}</td>
+                    <td>{{ h.searched_at|slice:":19"|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="bi bi-building"></i>
+    <h4>No hotel searches yet</h4>
+    <p>Search for hotels at a destination to see your history here.</p>
+    <a href="{% url 'hotel-search' %}" class="btn btn-primary">
+        <i class="bi bi-search me-1"></i> Search Hotels
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}

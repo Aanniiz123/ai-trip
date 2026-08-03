@@ -1,4 +1,3 @@
-
 from django.urls import path
 from . import views
 
@@ -8,4 +7,5 @@ urlpatterns = [
     path("<int:trip_id>/", views.trip_detail, name="trip-detail"),
     path("<int:trip_id>/edit/", views.trip_edit, name="trip-edit"),
     path("<int:trip_id>/delete/", views.trip_delete, name="trip-delete"),
+    path("<int:trip_id>/toggle-complete/", views.trip_toggle_complete, name="trip-toggle-complete"),
 ]

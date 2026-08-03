@@ -7,18 +7,21 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">
-            <i class="bi bi-geo-alt-fill"></i>
-            {{ trip.title }}
+            <i class="bi bi-geo-alt-fill"></i> {{ trip.title }}
         </h1>
-        <p class="page-subtitle">Trip details and itinerary overview</p>
+        <p class="page-subtitle">Trip details and nearby hotels</p>
     </div>
     <a href="{% url 'trip-list' %}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left"></i>
-        Back to Trips
+        <i class="bi bi-arrow-left"></i> Back to Trips
     </a>
 </div>
 
-<div class="card">
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error }}</div>
+{% endif %}
+
+{% if trip %}
+<div class="card mb-4">
     <div class="detail-cover">
         <i class="bi bi-airplane-fill"></i>
     </div>
@@ -39,23 +42,112 @@
                 <div class="value">{{ trip.end_date }}</div>
             </div>
             <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-moon-stars me-1"></i>Duration</div>
+                <div class="value">{{ trip.num_days }} day{{ trip.num_days|pluralize }}</div>
+            </div>
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-people me-1"></i>Trip Type</div>
+                <div class="value">{{ trip.trip_type|capfirst }}</div>
+            </div>
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-person-fill me-1"></i>Travelers</div>
+                <div class="value">{{ trip.num_people }}</div>
+            </div>
+            {% if trip.budget %}
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-currency-dollar me-1"></i>Budget</div>
+                <div class="value">{{ trip.budget }} {{ trip.currency }}</div>
+            </div>
+            {% endif %}
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-globe me-1"></i>Audience</div>
+                <div class="value">{{ trip.audience|capfirst }}</div>
+            </div>
+            <div class="detail-meta-item">
+                <div class="label"><i class="bi bi-check-circle me-1"></i>Status</div>
+                <div class="value">
+                    {% if trip.is_completed %}
+                    <span class="badge bg-success">Completed</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">In Progress</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="detail-meta-item">
                 <div class="label"><i class="bi bi-clock-history me-1"></i>Created</div>
-                <div class="value">{{ trip.created_at }}</div>
+                <div class="value">{{ trip.created_at|slice:":10" }}</div>
             </div>
         </div>
 
-        <div class="detail-actions">
+        <div class="detail-actions mt-4">
+            <!-- Toggle complete -->
+            <form method="post" action="{% url 'trip-toggle-complete' trip.id %}" class="d-inline">
+                {% csrf_token %}
+                {% if trip.is_completed %}
+                <input type="hidden" name="action" value="uncomplete">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-counterclockwise"></i> Mark Uncompleted
+                </button>
+                {% else %}
+                <input type="hidden" name="action" value="complete">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg"></i> Mark Completed
+                </button>
+                {% endif %}
+            </form>
+
             <a href="{% url 'trip-edit' trip.id %}" class="btn btn-warning">
-                <i class="bi bi-pencil-square"></i>
-                Edit Trip
+                <i class="bi bi-pencil-square"></i> Edit Trip
             </a>
             <a href="{% url 'trip-delete' trip.id %}" class="btn btn-danger">
-                <i class="bi bi-trash"></i>
-                Delete Trip
+                <i class="bi bi-trash"></i> Delete Trip
             </a>
         </div>
 
     </div>
 </div>
+
+<!-- Hotels Section -->
+<div class="page-header mt-2">
+    <div>
+        <h2 class="page-title" style="font-size:1.4rem;">
+            <i class="bi bi-building"></i> Hotels near {{ trip.destination }}
+        </h2>
+        <p class="page-subtitle">Auto-fetched based on your trip destination</p>
+    </div>
+</div>
+
+{% if hotels_error %}
+<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Could not load hotels: {{ hotels_error }}</div>
+{% endif %}
+
+{% if hotels %}
+<div class="row">
+    {% for h in hotels %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-building me-2"></i>{{ h.name }}</h5>
+                {% if h.address %}
+                <p class="card-text text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ h.address }}</p>
+                {% endif %}
+                {% if h.phone %}
+                <p class="card-text small"><i class="bi bi-telephone me-1"></i>{{ h.phone }}</p>
+                {% endif %}
+                {% if h.website %}
+                <a href="{{ h.website }}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                    <i class="bi bi-globe me-1"></i>Visit Website
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% elif not hotels_error %}
+<div class="alert alert-info"><i class="bi bi-info-circle me-2"></i>No hotels found near {{ trip.destination }}.</div>
+{% endif %}
+
+{% endif %}
 
 {% endblock %}
