@@ -20,10 +20,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES = setting.ACCESS_TOKEN_EXPIRE_MINUTES
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="v2/auth/token")
 
+## For Hashing the password
 password_hash = PasswordHash.recommended()
 DUMMY_HASH = password_hash.hash("dummypassword")
 
 
+
+# HELPER FUNCTION
 def verify_password(plain_password, hashed_password):
     return password_hash.verify(plain_password, hashed_password)
 
@@ -57,6 +60,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
+## Get the user Active user which is login
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Session = Depends(get_db),

@@ -1,0 +1,61 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}My Places | Trip Planner{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="bi bi-bookmark-star-fill"></i> My Saved Places
+        </h1>
+        <p class="page-subtitle">All destinations you've explored</p>
+    </div>
+    <a href="{% url 'place-search' %}" class="btn btn-primary">
+        <i class="bi bi-search me-1"></i> Search New Place
+    </a>
+</div>
+
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error }}</div>
+{% endif %}
+
+{% if places %}
+<div class="row">
+    {% for p in places %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-1">
+                    <i class="bi bi-geo-alt-fill text-primary me-2"></i>{{ p.name }}
+                </h5>
+                {% if p.country %}
+                <p class="text-muted small mb-1"><i class="bi bi-flag me-1"></i>{{ p.country }}{% if p.state %}, {{ p.state }}{% endif %}</p>
+                {% endif %}
+                {% if p.latitude %}
+                <p class="text-muted small mb-2"><i class="bi bi-crosshair me-1"></i>{{ p.latitude }}, {{ p.longitude }}</p>
+                {% endif %}
+                <form method="post" action="{% url 'place-delete' p.id %}" class="mt-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Remove {{ p.name }} from your places?')">
+                        <i class="bi bi-trash me-1"></i> Remove
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="bi bi-geo-alt"></i>
+    <h4>No saved places yet</h4>
+    <p>Search for a city to explore and save it to your list.</p>
+    <a href="{% url 'place-search' %}" class="btn btn-primary">
+        <i class="bi bi-search me-1"></i> Search a Place
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}

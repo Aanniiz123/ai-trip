@@ -87,7 +87,6 @@ class HotelsService:
                     "address": props.get("formatted"),
                     "latitude": coords[1],
                     "longitude": coords[0],
-                    "categories": props.get("categories", []),
                     "website": props.get("website"),
                     "phone": str(props.get("contact", {}).get("phone"))
                     if props.get("contact", {}).get("phone")

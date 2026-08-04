@@ -7,13 +7,22 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">
-            <i class="bi bi-map-fill"></i> My Trips
+            <i class="bi bi-map-fill"></i> {{ filter_label|default:"My Trips" }}
         </h1>
-        <p class="page-subtitle">All your planned adventures in one place</p>
+        <p class="page-subtitle">
+            {% if filter_label %}{{ filter_label }} — filtered view{% else %}All your planned adventures in one place{% endif %}
+        </p>
     </div>
-    <a href="{% url 'trip-create' %}" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Plan a New Trip
-    </a>
+    <div class="d-flex gap-2">
+        {% if filter_label %}
+        <a href="{% url 'trip-list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle me-1"></i> All Trips
+        </a>
+        {% endif %}
+        <a href="{% url 'trip-create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Plan a New Trip
+        </a>
+    </div>
 </div>
 
 {% if trips %}

@@ -194,6 +194,42 @@ def trip_delete(request, trip_id):
 
 
 @login_required_session
+def trip_list_completed(request):
+    """Show only completed trips."""
+    headers = get_auth_headers(request)
+    try:
+        resp = requests.get(f"{API_BASE}/trips/status/completed", timeout=5, headers=headers)
+        resp.raise_for_status()
+        trips = resp.json()
+    except Exception as e:
+        trips = []
+        error = str(e)
+    else:
+        error = None
+    return render(request, "dashboard/trip_list.html", {
+        "trips": trips, "error": error, "filter_label": "Completed Trips"
+    })
+
+
+@login_required_session
+def trip_list_uncompleted(request):
+    """Show only active/uncompleted trips."""
+    headers = get_auth_headers(request)
+    try:
+        resp = requests.get(f"{API_BASE}/trips/status/uncompleted", timeout=5, headers=headers)
+        resp.raise_for_status()
+        trips = resp.json()
+    except Exception as e:
+        trips = []
+        error = str(e)
+    else:
+        error = None
+    return render(request, "dashboard/trip_list.html", {
+        "trips": trips, "error": error, "filter_label": "Active Trips"
+    })
+
+
+@login_required_session
 def trip_toggle_complete(request, trip_id):
     """Toggle trip completed/uncompleted via PATCH."""
     headers = get_auth_headers(request)

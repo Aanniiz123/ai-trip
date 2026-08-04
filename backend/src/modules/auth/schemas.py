@@ -27,6 +27,8 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
+
+## For the JWT Token
 class Token(BaseModel):
     access_token: str
     token_type: str

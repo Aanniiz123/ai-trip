@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.dashboard.apps.DashboardConfig",
     'apps.authentication.apps.AuthenticationConfig',
     'apps.hotels.apps.HotelsConfig',
+    'apps.places.apps.PlacesConfig',
 ]
 
 MIDDLEWARE = [

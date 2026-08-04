@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include("apps.dashboard.urls")),
     path("auth/", include("apps.authentication.urls")),
     path("hotels/", include("apps.hotels.urls")),
+    path("places/", include("apps.places.urls")),
 ]

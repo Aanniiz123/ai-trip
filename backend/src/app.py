@@ -10,12 +10,6 @@ app = FastAPI(title="Trip Planner API")
 
 
 
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-
-
 app.include_router(auth_module.router, prefix="/v2")
 app.include_router(trips_module.router, prefix="/v2")
 app.include_router(places_module.router, prefix="/v2")

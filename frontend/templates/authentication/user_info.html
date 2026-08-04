@@ -1,0 +1,189 @@
+{% extends "authentication/base.html" %}
+
+{% block title %}Complete Profile | AI Trip Planner{% endblock %}
+
+{% block content %}
+<div class="auth-stage">
+    <div class="auth-wrap">
+
+        <!-- Left Poster -->
+        <aside class="auth-poster">
+            <div class="poster-brand">
+                <i class="bi bi-airplane-engines-fill"></i>
+                <span>AI Trip Planner</span>
+            </div>
+
+            <span class="poster-tag">Almost there</span>
+
+            <h1 class="poster-title">
+                Complete your<br>
+                travel <span>profile.</span>
+            </h1>
+
+            <p class="poster-sub">
+                Tell us a little about yourself so we can personalize
+                destinations, travel suggestions, and AI-generated itineraries
+                just for you.
+            </p>
+
+            <div class="poster-stats">
+                <div class="poster-stat">
+                    <i class="bi bi-person-check-fill"></i>
+                    <div>
+                        <strong>Personalized</strong>
+                        <span>Recommendations</span>
+                    </div>
+                </div>
+
+                <div class="poster-stat">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <div>
+                        <strong>Smart</strong>
+                        <span>Travel Planning</span>
+                    </div>
+                </div>
+
+                <div class="poster-stat">
+                    <i class="bi bi-stars"></i>
+                    <div>
+                        <strong>AI Powered</strong>
+                        <span>Experience</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Profile Form -->
+        <div>
+            <div class="card auth-card">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="logo-circle">
+                        <i class="bi bi-person-vcard"></i>
+                    </div>
+
+                    <h2 class="auth-title">Complete Your Profile</h2>
+                    <p class="auth-sub">
+                        A few details will help us personalize your travel experience.
+                    </p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-telephone"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    class="form-control"
+                                    placeholder="+977 98XXXXXXXX"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Education</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-mortarboard"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    name="education"
+                                    class="form-control"
+                                    placeholder="Bachelor of Computer Science"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Job Title</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-briefcase"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    name="job_title"
+                                    class="form-control"
+                                    placeholder="Software Engineer"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Current Location</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-geo-alt"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    name="current_location"
+                                    class="form-control"
+                                    placeholder="Kathmandu, Nepal"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nationality</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-flag"></i>
+                                </span>
+                                <input
+                                    type="text"
+                                    name="nationality"
+                                    class="form-control"
+                                    placeholder="Nepali"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label">Date of Birth</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar-event"></i>
+                                </span>
+                                <input
+                                    type="date"
+                                    name="date_of_birth"
+                                    class="form-control"
+                                    required>
+                            </div>
+                        </div>
+
+                        {% if error %}
+                        <div class="alert alert-danger mt-3 mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {{ error }}
+                        </div>
+                        {% endif %}
+
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Save Profile
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <p class="text-center text-white-50 small mt-4 mb-0" style="opacity:.7;">
+                ✈️ You're just one step away from your personalized AI travel planner.
+            </p>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}
