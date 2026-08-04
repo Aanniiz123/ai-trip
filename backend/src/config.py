@@ -10,6 +10,8 @@ class Setting(BaseSettings):
     
     GEOCODE_URL : str
     PLACES_URL : str
+    
+    CHAT_API :  str
 
     class Config:
         env_file = '.env'

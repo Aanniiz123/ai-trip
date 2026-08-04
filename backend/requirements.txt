@@ -8,3 +8,4 @@ pydantic-settings
 alembic
 httpx
 requests
+groq

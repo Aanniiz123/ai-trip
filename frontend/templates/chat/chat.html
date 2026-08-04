@@ -1,0 +1,58 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}AI Chat | Trip Planner{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">
+            <i class="bi bi-chat-dots-fill"></i> AI Chat
+        </h1>
+        <p class="page-subtitle">Ask anything about your trips, destinations, or travel plans</p>
+    </div>
+</div>
+
+{% if error %}
+<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error }}</div>
+{% endif %}
+
+{% if user_message and response_text %}
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="mb-3">
+            <div class="text-muted small mb-1"><i class="bi bi-person-fill me-1"></i>You</div>
+            <div class="p-3 rounded" style="background: #f0f4ff; border-left: 4px solid #4f46e5;">
+                {{ user_message }}
+            </div>
+        </div>
+        <div>
+            <div class="text-muted small mb-1"><i class="bi bi-stars me-1"></i>AI Assistant</div>
+            <div class="p-3 rounded" style="background: #f8f9fa; border-left: 4px solid #10b981;">
+                {{ response_text|linebreaksbr }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card form-card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-chat-left-text me-1"></i>Your Message
+                </label>
+                <textarea name="message" class="form-control" rows="4"
+                          placeholder="e.g. What are the best places to visit in Nepal? Plan a 5-day trip to Paris..."
+                          required>{{ user_message }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-send me-1"></i> Send
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

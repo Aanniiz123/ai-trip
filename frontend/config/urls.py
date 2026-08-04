@@ -23,4 +23,5 @@ urlpatterns = [
     path("auth/", include("apps.authentication.urls")),
     path("hotels/", include("apps.hotels.urls")),
     path("places/", include("apps.places.urls")),
+    path("chat/", include("apps.chat.urls")),
 ]

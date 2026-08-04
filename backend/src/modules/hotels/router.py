@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from src.modules.hotels.schemas import HotelsSearchRequest, HotelsResult, HotelHistoryRead
 from src.modules.hotels.service import hotels_service
 from typing import List

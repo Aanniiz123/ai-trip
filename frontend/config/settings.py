@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'apps.authentication.apps.AuthenticationConfig',
     'apps.hotels.apps.HotelsConfig',
     'apps.places.apps.PlacesConfig',
+    'apps.chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [
